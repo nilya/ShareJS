@@ -5,43 +5,46 @@ Original project is Joseph Gentle's [`ShareJS`](https://github.com/josephg/Share
 
 This branch adds data type for formatted text.
 
-Operations on rich text.
+Operations on rich text
+-------
 
 Document is of the next form:
+```js
 [
     {
         t: "Bold fragment"
         params:
             bold: true
             font-size: 14
-    }
+    },
     {
         t: "Italic fragment"
         params: {italic: true}
     }
 ]
+```
 
 T is a text field, common text operation are applied on this field.
 Params is a set of key-value pairs, only "insert" and "delete" operations are applied for them.
 All positions are measured from the start of document, not a start of fragment.
 
 Available operations:
-    * text insertion
+* text insertion
         p: 9                    # Text will be inserted before this position
         ti: "bold"              # Text to insert
         params:                 # Params of the inserted text
             bold: true
             font-size: 14
-    * text deletion
+* text deletion
         p: 8                    # Text will be deleted starting with this position
         td: "Fragment"          # Text to delete (needed both to revert and check operation)
         params: {italic: true}  # Params of deleted text (needed both to revert and check operation)
-    * param insertion
+* param insertion
         p: 5                    # Param will be inserted for text starting with that position
         len: 4                  # Number of symbols that will insert param
         paramsi:                # Added param (one param per operation)
             font: 14
-    * param deletion
+* param deletion
         p: 5                    # Param will be deleted starting with this position
         len: 4                  # Number of symbols that will delete param
         paramsd:                # Removed param (one param per operation)
@@ -57,20 +60,23 @@ client1 and client2 have doc [{t: "discssion", params: {}}]
 client1 inserts u: {p: 4, t: "u"}
 client2 inserts bold param: {p: 0, len: 9, paramsi: {bold: true}}
 After transformations & application of operations they will both have:
+```js
 [
     {
         t: "disc"
         params: {bold: true}
-    }
+    },
     {
         t: "u"
         params: {}
-    }
+    },
     {
         t: "ssion"
         params: {bold: true}
     }
 ]
+```
+
 Simple idea to transfrom text insertion against params change does not work in all
 possible cases.
 Params change when transformed against text insertion gets split into two operations
